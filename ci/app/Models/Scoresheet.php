@@ -10,7 +10,7 @@ class Scoresheet extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['user','quiz','score','sent'];
+    protected $allowedFields = ['user','quiz','score','sent','answers'];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';

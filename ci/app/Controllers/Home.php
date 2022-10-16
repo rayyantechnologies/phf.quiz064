@@ -90,6 +90,8 @@ class Home extends BaseController
 		$numbs = range(0, 14);
 		$score = 0;
 
+        // var_dump($incoming);
+
 		$res = $quizlet->where('code', $code)->find()[0]['answers'];
 		foreach (json_decode($res) as $key => $ans) {
 			if (!empty($incoming[$key . 'que' . $key])) {
@@ -106,10 +108,10 @@ class Home extends BaseController
 
 		if (!empty($db = $scoresheet->where(['user' => $session->user, 'quiz' => $session->quiz])->find())) {
 			if ($score > $db[0]['score']) {
-				$scoresheet->update($db[0]['id'], ['score' => $score]);
+				$scoresheet->update($db[0]['id'], ['score' => $score, 'answers'=>json_encode($incoming)]);
 			}
 		} else {
-			$data = ['user' => $session->user, 'quiz' => $session->quiz, 'score' => $score, 'sent' => $session->published];
+			$data = ['user' => $session->user, 'quiz' => $session->quiz, 'score' => $score, 'sent' => $session->published, 'answers'=>json_encode($incoming)];
 			$scoresheet->insert($data);
 		}
 
@@ -148,34 +150,91 @@ class Home extends BaseController
 
 	public function solution($id)
 	{
-		$id = $this->test($id, 0);
-		echo ('<center>Solution for quiz '.$id.'</center><br>');
-		$quizlet = new \App\Models\Quiz();
-		// $id = md
-		$res = $quizlet->where('code', $id)->find()[0]['answers'];
-		$que = $quizlet->where('code', $id)->find()[0]['questions'];
-		foreach (json_decode($que) as $ky => $qus) {
-			echo ('('.($ky + 1) . ') ' . $qus->{0} . '<br>');
-			$option = [
-				'a' => $qus->{1},
-				'b' => $qus->{2},
-				'c' => $qus->{3},
-				'd' => $qus->{4},
-			];
-			foreach (json_decode($res) as $key => $ans) {
-				if ($qus->id == $ans->id) {
-					foreach ($option as $key => $opt) {
-						echo ($key.') '.$opt);
-						if ($ans->ans == $key) {
-							echo (' &#x1f4cc');
-						}
-						echo '<br>';
-					}
-					echo '<br>';
-				}
-			}
-		}
+
+        $session = session();
+        if ($session->Logged_in != true) {
+            echo view('header');
+            echo view('login2',['id'=>$id]);
+            echo view('footer');
+        } else {
+            // $id = $this->test($id, 0);
+            $id = '200203';
+
+            echo ('<center>Solution for quiz '.$id.'</center><br>');
+    		// echo ('<center>Solution for quiz '.$id.'</center><br>');
+            $scoresheet = new \App\Models\Scoresheet();
+    		$quizlet = new \App\Models\Quiz();
+            $result = $quizlet->where('code', $id)->find();
+            $res = $result[0]['answers'];
+            $que = $result[0]['questions'];
+            $id = $result[0]['id'];
+
+            $uAns = [];
+            $db = $scoresheet->where(['user' => $session->user, 'quiz' => $id])->find();
+            if(!empty($db[0]['answers'])){
+                $uAns = json_decode($db[0]['answers']);
+                echo ('<center>You Scored <h2>'.$db[0]['score'].'</h2></center><br>');
+            }else{
+                echo ("<center>User's Answers not recorded</center><br>");
+            }
+    		// $id = md
+            // var_dump($uAns);
+    		foreach (json_decode($que) as $ky => $qus) {
+    			echo ('('.($ky + 1) . ') ' . $qus->{0} . '<br>');
+    			$option = [
+    				'a' => $qus->{1},
+    				'b' => $qus->{2},
+    				'c' => $qus->{3},
+    				'd' => $qus->{4},
+    			];
+    			foreach (json_decode($res) as $ke => $ans) {
+    				if ($qus->id == $ans->id) {
+    					foreach ($option as $key => $opt) {
+    						echo ($key.') '.$opt);
+                            $vl = $ke.'que'.$ke;
+
+    						if ($ans->ans == $key) {
+                                echo (' &#9989;');
+                                // if($uAns->$vl == $key){
+                                //     echo (' &#9989;');
+                                // }
+    						}else{
+                               if($uAns->$vl == $key){
+                                    echo (' &#10060;');
+                                }
+                            }
+    						echo '<br>';
+    					}
+    					echo '<br>';
+    				}
+    			}
+    		}
+        }
 	}
+
+
+    public function postrlogin($id)
+    {
+        $Users = new \App\Models\Users();
+        $Scoresheet = new \App\Models\Scoresheet();
+        $session = session();
+        $incoming = $this->request->getPost();
+        $incoming['password'] = $incoming['password'];
+        $incoming['clearance'] = 1;
+
+        if (!empty($db = $Users->where($incoming)->find())) {
+            $ses_data = [
+                'email' => $db[0]['email'],
+                'user' => $db[0]['id'],
+                'Logged_in' => TRUE,
+                'clearance' => $db[0]['clearance']
+            ];
+            $session->set($ses_data);
+            return redirect()->to(base_url('/solution/'.$id));
+        } else {
+            $this->message('You are yet to take a quiz');
+        }
+    }
 
 	public function postlogin()
 	{
@@ -216,6 +275,13 @@ class Home extends BaseController
 			}
 		}
 	}
+
+    public function logout()
+    {
+        $session = session();
+        $session->destroy();
+        return redirect()->to(base_url());
+    }
 
 	//--------------------------------------------------------------------
 

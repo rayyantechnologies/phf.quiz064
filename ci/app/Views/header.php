@@ -14,22 +14,22 @@
         rel="stylesheet" />
 
     <!-- Perfect Scrollbar -->
-    <link type="text/css" href="assets/vendor/perfect-scrollbar.css" rel="stylesheet" />
+    <link type="text/css" href="<?=base_url('assets/vendor/perfect-scrollbar.css')?>" rel="stylesheet" />
 
     <!-- Fix Footer CSS -->
-    <link type="text/css" href="assets/vendor/fix-footer.css" rel="stylesheet" />
+    <link type="text/css" href="<?=base_url('assets/vendor/fix-footer.css')?>" rel="stylesheet" />
 
     <!-- Material Design Icons -->
-    <link type="text/css" href="assets/css/material-icons.css" rel="stylesheet" />
+    <link type="text/css" href="<?=base_url('assets/css/material-icons.css')?>" rel="stylesheet" />
 
     <!-- Font Awesome Icons -->
-    <link type="text/css" href="assets/css/fontawesome.css" rel="stylesheet" />
+    <link type="text/css" href="<?=base_url('assets/css/fontawesome.css')?>" rel="stylesheet" />
 
     <!-- Preloader -->
-    <link type="text/css" href="assets/css/preloader.css" rel="stylesheet" />
+    <link type="text/css" href="<?=base_url('assets/css/preloader.css')?>" rel="stylesheet" />
 
     <!-- App CSS -->
-    <link type="text/css" href="assets/css/app.css" rel="stylesheet" />
+    <link type="text/css" href="<?=base_url('assets/css/app.css')?>" rel="stylesheet" />
 </head>
 
 <body class="layout-sticky-subnav layout-default">
@@ -57,7 +57,7 @@
                     <a href="fixed-index.html" class="navbar-brand mr-16pt">
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
                             <span class="avatar-title rounded bg-primary"><img
-                                    src="assets/images/logo/logo.jpeg" alt="logo"
+                                    src="<?=base_url('assets/images/logo/logo.jpeg')?>" alt="logo"
                                     class="img-fluid" /></span>
                         </span>
 

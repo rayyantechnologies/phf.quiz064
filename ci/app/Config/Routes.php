@@ -34,12 +34,14 @@ $routes->get('/', 'Home::index');
 $routes->get('/access', 'Home::quizcode');
 $routes->get('/quiz', 'Home::processcode');
 $routes->get('/login', 'Home::login');
+$routes->get('/logout', 'Home::logout');
 $routes->get('/questions', 'Home::questions');
 $routes->get('/solution/(:segment)', 'Home::solution/$1');
 $routes->get('/test/(:segment)/(:num)', 'Home::test/$1/$2');
 // $routes->get('/test/(:segment)', 'Home::test/$1');
 $routes->post('/quizlet', 'Home::postquiz');
 $routes->post('/login', 'Home::postlogin');
+$routes->post('/rlogin/(:segment)', 'Home::postrlogin/$1');
 
 /**
  * --------------------------------------------------------------------
