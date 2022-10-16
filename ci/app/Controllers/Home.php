@@ -157,8 +157,7 @@ class Home extends BaseController
             echo view('login2',['id'=>$id]);
             echo view('footer');
         } else {
-            // $id = $this->test($id, 0);
-            $id = '200203';
+            $id = $this->test($id, 0);
 
             echo ('<center>Solution for quiz '.$id.'</center><br>');
     		// echo ('<center>Solution for quiz '.$id.'</center><br>');
